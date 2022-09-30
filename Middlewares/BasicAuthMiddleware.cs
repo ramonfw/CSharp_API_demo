@@ -24,10 +24,16 @@ namespace myapi_cs.Middlewares
             {
                 await _next(httpContext);
             }
+/*
+            else if (vPath.IndexOf("api/Employee/list/") >0 )
+            {
+                await _next(httpContext);
+            }
+*/
             else
             {
                 string authHeader = httpContext.Request.Headers["Authorization"];
-                if (authHeader != null)
+                if (authHeader != null && authHeader.IndexOf("Basic ") >= 0)
                 {
                     string auth = authHeader.Split(new char[] { ' ' })[1];
                     Encoding encoding = Encoding.GetEncoding("UTF-8");
@@ -45,9 +51,24 @@ namespace myapi_cs.Middlewares
                         return;
                     }
                 }
+                else if (authHeader != null && authHeader.IndexOf("Bearer ") >= 0)
+                {
+                    string auth = authHeader.Split(new char[] { ' ' })[1];
+                    string vToken = auth;
+                    if (vToken == "1234567890")
+                    {
+                        await _next(httpContext);
+                    }
+                    else
+                    {
+                        httpContext.Response.StatusCode = 401;
+                        httpContext.Response.Headers.Add("X-Unauthorized-string", "Bearer Token incorrecto");
+                        return;
+                    }
+                }
                 else
                 {
-                    httpContext.Response.Headers.Add("X-Unauthorized-string", "Debe enviar usuario y clave en su solicitud.");
+                    httpContext.Response.Headers.Add("X-Unauthorized-string", "Debe enviar token, o usuario y clave en su solicitud.");
                     httpContext.Response.StatusCode = 401;
                     return;
                 }

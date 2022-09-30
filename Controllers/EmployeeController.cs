@@ -115,13 +115,13 @@ namespace myapi_cs.Controllers
         }
 
 
-        // GET: api/<EmployeeController>/list/7    donde 7: SQL limit
-        [HttpGet("list/{cantidad}")]
-        public string GetListLimit(int cantidad)
+        // GET: api/<EmployeeController>/list/3/7    donde 7: SQL limit
+        [HttpGet("list/{inicio}/{cantidad}")]
+        public string GetListLimit(int inicio, int cantidad)
         {
-            List<List<string>> vListEmployeeList = vSQLiteController.GetDataEmployeeAll(cantidad);
+            List<List<string>> vListEmployeeList = vSQLiteController.GetDataEmployeeAll(inicio,cantidad);
 
-            string vMsgResponse = "Listado de los primeros " + cantidad.ToString() + " empleados obtenido satisfactoriamente";
+            string vMsgResponse = "Listado de los primeros " + cantidad.ToString() + " empleados comenzando por el numero " + inicio.ToString() + " obtenido satisfactoriamente";
             if (vSQLiteController.lastErrorMessage != "")
                 vMsgResponse = vSQLiteController.lastErrorMessage;
 

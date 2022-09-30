@@ -250,7 +250,7 @@ namespace myapi_cs.Controllers
             return sqlite_datareader;
         }
 
-        public SQLiteDataReader ReadDataEmployeeAll(Int64 pLimit)         //  Ok Open Close
+        public SQLiteDataReader ReadDataEmployeeAll(Int64 pInicial, Int64 pLimit)         //  Ok Open Close
         {
             SQLiteDataReader sqlite_datareader = null;
             SQLiteCommand sqlite_cmd;
@@ -263,8 +263,9 @@ namespace myapi_cs.Controllers
             {
                 if (pLimit > 0)
                 {
-                    sqlite_cmd.CommandText = "SELECT E1.*, E2.FirstName, E2.LastName FROM employees E1 left join employees E2 on E1.ReportsTo = E2.EmployeeId LIMIT ?";
+                    sqlite_cmd.CommandText = "SELECT E1.*, E2.FirstName, E2.LastName FROM employees E1 left join employees E2 on E1.ReportsTo = E2.EmployeeId LIMIT ?, ?";
                     // Añadimos el parámetro LIMIT
+                    sqlite_cmd.Parameters.AddWithValue("OFFSET", pInicial.ToString());
                     sqlite_cmd.Parameters.AddWithValue("LIMIT", pLimit.ToString());
                 }
                 else
@@ -395,7 +396,7 @@ namespace myapi_cs.Controllers
         }
 
 
-        public List<List<string>> GetDataEmployeeAll(int pLimit)       //  Ok Open Close
+        public List<List<string>> GetDataEmployeeAll(int pInicial, int pLimit)       //  Ok Open Close
         {
             List<List<string>> arrDatosEmployeeList = new List<List<string>>();
             this.lastErrorMessage = "";
@@ -403,7 +404,7 @@ namespace myapi_cs.Controllers
             string message = "";
 
             this.OpenConnection();
-            SQLiteDataReader data_reader = this.ReadDataEmployeeAll(pLimit);
+            SQLiteDataReader data_reader = this.ReadDataEmployeeAll(pInicial, pLimit);
 
             if (data_reader == null)
             {
