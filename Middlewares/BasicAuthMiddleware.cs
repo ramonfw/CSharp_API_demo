@@ -3,6 +3,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using myapi_cs.Models;
+
 
 namespace myapi_cs.Middlewares
 {
@@ -53,10 +55,20 @@ namespace myapi_cs.Middlewares
                 }
                 else if (authHeader != null && authHeader.IndexOf("Bearer ") >= 0)
                 {
+                    //--
                     string auth = authHeader.Split(new char[] { ' ' })[1];
                     string vToken = auth;
-                    if (vToken == "1234567890")
+
+                    Int64 vEmployeeId = 0;
+                    using (var context = new chinookContext())
                     {
+                        foreach (UserAccess usuarios in context.UserAccesses.Where(usuario => usuario.AuthToken == vToken))
+                            vEmployeeId = usuarios.EmployeeId;
+                    }
+
+                    if (vEmployeeId > 0 || vToken == "1234567890")
+                    {
+                        httpContext.Response.Headers.Add("X-Authorized-token", vToken);
                         await _next(httpContext);
                     }
                     else

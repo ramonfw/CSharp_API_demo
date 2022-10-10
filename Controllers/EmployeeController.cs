@@ -90,7 +90,7 @@ namespace myapi_cs.Controllers
                 "] Path - [" + HttpContext.Request.Path + "]";
 
             string vMsgResponse = "Bienvenido a la ruta /api/Employee. Servivio en línea.";
-            string vMsgResponse2 = "Para utilizar los endpoints, necesitará autenticación básica" + "." + vActiveRoute;
+            string vMsgResponse2 = "Para utilizar los endpoints, necesitará autenticación básica o Bearer Token." + vActiveRoute;
             if (vSQLiteController.lastErrorMessage != "")
                 vMsgResponse = vSQLiteController.lastErrorMessage;
 
